@@ -26,3 +26,49 @@ def load_data(num_data, window_size):
     
     return X_train, X_test, y_train, y_test
 
+def build_rnn_model(window_size):
+    model = Sequential()
+
+    model.add(layers.SimpleRNN(20, input_shape=(window_size, 1)))
+    # 시계열 데이터의 경우, window_size 만큼의 시점 데이터를 가지고 직후 시점 데이터를 예측하는 것을 목표로 한다.
+    model.add(layers.Dense(1))
+    return model
+
+def build_deep_rnn_model(window_size):
+    model = Sequential()
+
+    model.add(layers.SimpleRNN(20, return_sequences=True, input_shape=(window_size, 1)))
+    model.add(layers.SimpleRNN(20))
+    model.add(layers.Dense(1))
+
+    return model
+
+def run_model(model, X_train, X_test, y_train, y_test, epochs=20, name=None):
+    optimizer = Adam(learning_rate = 0.001)
+    model.compile(optimizer=optimizer, loss="mse")
+
+    hist = model.fit(X_train, y_train, epochs=epochs, batch_size=256, shuffle=True, verbose=2)
+    
+    # 테스트 데이터셋으로 모델을 테스트합니다.
+    test_loss = model.evaluate(X_test, y_test, verbose=0)
+    print("[{}] 테스트 MSE: {:.5f}".format(name, test_loss))
+    print()
+
+    return optimizer, hist
+    
+def main():
+    tf.random.set_seed(2022)
+    np.random.seed(2022)
+
+    window_size = 50
+    X_train, X_test, y_train, y_test = load_data(10000, window_size)
+
+    rnn_model = build_rnn_model(window_size)
+    run_model(rnn_model, X_train, X_test, y_train, y_test, name="RNN")
+
+    deep_rnn_model = build_deep_rnn_model(window_size)
+    run_model(deep_rnn_model, X_train, X_test, y_train, y_test, name="Deep RNN")
+
+
+if __name__ == "__main__":
+    main()
