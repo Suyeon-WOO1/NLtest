@@ -42,7 +42,7 @@ def build_rnn_model(window_size):
     model = Sequential()
 
     model.add(layers.SimpleRNN(128, input_shape=(window_size, 1)))
-    model.add(layers.Dense(32, activation='ReLU'))
+    model.add(layers.Dense(32, activation="relu"))
     model.add(layers.Dense(1))
 
     return model
@@ -51,7 +51,7 @@ def build_lstm_model(window_size):
     model = Sequential()
 
     model.add(layers.LSTM(128, input_shape=(window_size, 1)))
-    model.add(layers.Dense(32, activation='ReLU'))
+    model.add(layers.Dense(32, activation="relu"))
     model.add(layers.Dense(1))
 
     return model
@@ -60,7 +60,7 @@ def build_gru_model(window_size):
     model = Sequential()
 
     model.add(layers.GRU(128, input_shape=(window_size, 1)))
-    model.add(layers.Dense(32, activation='ReLU'))
+    model.add(layers.Dense(32, activation="relu"))
     model.add(layers.Dense(1))
 
     return model
